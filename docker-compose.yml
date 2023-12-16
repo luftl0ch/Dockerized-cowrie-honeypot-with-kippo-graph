@@ -1,0 +1,74 @@
+---
+version: '3.2'
+services:
+  cowrie-mysql:
+    container_name: cowrie-mysql
+    image: mysql:8.2.0-oraclelinux8
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password --sql_mode="IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - cowrie-sql:/var/lib/mysql
+      - ./configs/mysql.sql:/docker-entrypoint-initdb.d/sql-init.sql:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - backend
+      - frontend
+
+  cowrie:
+    container_name: cowrie
+    image: cowrie/cowrie:latest
+    restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./configs/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
+      - cowrie-etc:/cowrie/cowrie-git/etc
+      - cowrie-var:/cowrie/cowrie-git/var
+    ports:
+      - ${SSH_PORT}:2222
+    depends_on:
+      - cowrie-mysql
+    networks:
+      - backend
+    
+  kippo-graph:
+    container_name: kippo-graph
+    image: uleenucks/kippo-graph:latest
+    restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./configs/graph-config.php:/kippo-graph/config.php:ro
+      - cowrie-var:/opt/cowrie/var
+    environment:
+      - GID=991
+      - UID=991
+    ports:
+      - ${WEBINTERFACE_PORT}:8888
+    depends_on:
+      - cowrie-mysql
+      - cowrie
+    networks:
+      - frontend
+
+networks:
+  backend:
+   name: backend
+  frontend:
+    name: frontend
+   
+volumes:
+  cowrie-etc:
+   name: cowrie-etc
+  cowrie-var:
+   name: cowrie-var
+  cowrie-sql:
+   name: cowrie-sql
