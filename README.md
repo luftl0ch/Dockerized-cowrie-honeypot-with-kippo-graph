@@ -2,9 +2,15 @@
 
 An all in one functional docker-compose project for the popular cowrie ssh honeypot project. In addition, a kippo-graph container will be deployed to graphically analyze the attacks.
 
-![Kippo-graph demo animation](kippo-graph-animation.gif)
+<br/>
 
-<h2>❗️ Please do not use if you do not know exactly how to secure the entire system. kippo-graph has not been maintained for a long time (12/2023).</h2>
+<p align="center">
+  <img src="kippo-graph-animation.gif" />
+</p>
+
+<br/>
+
+**❗️ Please do not use if you do not know exactly how to secure the entire system. kippo-graph has not been maintained for a long time (12/2023).**
 
 # Installation
 
@@ -16,13 +22,6 @@ An all in one functional docker-compose project for the popular cowrie ssh honey
    ```sh
     docker-compose up 
    ```
-3. Kippo-graph be available on http://127.0.0.1:8888.
+3. Kippo-graph will be available at http://127.0.0.1:8888
 
-You can change the Port of kippo-graph in the .env file. The database credentials are preconfigured in the following files: `.env` `configs/cowrie.cfg` `configs/graph-config.php`
-
-# Based on:
-
-<br/>
-
-[cowrie](https://github.com/cowrie/cowrie) <br/>
-[kippo-graph](https://github.com/ikoniaris/kippo-graph)
+You can change the Port of kippo-graph in the .env file. <br/>The database credentials are preconfigured in the following files: `.env` `configs/cowrie.cfg` `configs/graph-config.php`
