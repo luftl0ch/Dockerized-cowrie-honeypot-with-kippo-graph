@@ -1,4 +1,4 @@
-<h1 align="center">Dockerized cowrie honeypot with graphical kippo-graph analyzer</h1>
+<h1 align="center">Dockerized SSH honeypot with graphical analyzer</h1>
 
 An all in one functional docker-compose project for the popular cowrie ssh honeypot project. In addition, a kippo-graph container will be deployed to graphically analyze the attacks.
 
